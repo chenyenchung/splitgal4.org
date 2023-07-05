@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% if line_list %}
+    <table class="table table-hover">
+      <th scope="col">ID</th>
+      <th scope="col">Gene symbol</th>
+      <th scope="col">AD/DBD</th>
+      <th scope="col">Insertion site</th>
+      <th scope="col">Insertion style</th>
+      <th scope="col">Contributor</th>
+      <th scope="col">Citation</th>
+      {% for line in line_list %}
+          <tr>
+            <td>SG{{ line.id }}</td>
+            <td>{{ line.gene_name }}</td>
+            <td>
+              {% if line.effector_type == "DBD" %}
+                DBD
+              {% else %}
+              {{ line.activator_type }}
+              {% endif %}
+            </td>
+            <td>
+              {% if line.source_id %}
+                {{ line.source_id }}
+              {% else %}
+                {{ line.ins_seqname }}:{{ line.ins_site}}
+              {% endif %}
+            </td>
+            <td>{{ line.cassette }}</td>
+            <td>{{ line.contributor }}</td>
+            <td>{{ line.reference }}</td>
+          </tr>
+      {% endfor %}
+  {% else %}
+      <p>No lines are available.</p>
+  {% endif %}
+{% endblock %}
