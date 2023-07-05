@@ -4,10 +4,12 @@ from django.db.models import Q
 from .models import fly_line
 
 def index(request):
+    see_all = request.user.is_staff
     query = request.GET.get('search-keyword')   
     if query:        
         line_list = fly_line.objects.filter(
-            Q(internal_sharing=False) & 
+            (Q(internal_sharing=see_all) |
+             Q(internal_sharing=False)) & 
             (
                 Q(gene_name__icontains=query) |
                 Q(effector_type__icontains=query) |
@@ -18,7 +20,10 @@ def index(request):
             )
         ).order_by("id")
     else:
-        line_list = fly_line.objects.filter(internal_sharing=False).order_by("id")
+        line_list = fly_line.objects.filter(
+            (Q(internal_sharing=see_all) |
+             Q(internal_sharing=False))
+        ).order_by("id")
 
     template = loader.get_template("index.html")
     context = {
