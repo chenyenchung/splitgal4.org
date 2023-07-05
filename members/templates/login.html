@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="shadow m-5 p-4 mb-5 bg-body rounded">
+<div class="shadow p-3 mb-5 bg-body rounded">
   <h1>Login</h1>  
-  <br/><br/>
 
-  <form action="" method=POST>
+  <form action="" method=POST class="m-1">
     {% csrf_token %}
 
-    <div class="form-floating mb-3">
+    <div class="form-floating mb-3 mt-3">
       <input type="text" name="username" class="form-control" id="floatingInput" placeholder="Please enter your username">
       <label for="floatingInput">Username</label>
     </div>
@@ -21,5 +20,9 @@
     <input type="submit" value="Submit" class="btn btn-secondary">
     </div>
   </form>
+  <div class="form-floating mt-3">
+    New to this site? <a href="{% url 'register' %}">Sign up</a> for an account.
+  </div>
+  
 </div>
 {% endblock %}

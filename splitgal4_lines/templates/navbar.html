@@ -12,10 +12,12 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Sign in</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Sign in/up</a>
         </li>
+        {% endif %}
+        {% if user.is_superuser %}
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'register' %}">Sign up</a>
+          <a class="nav-link active" aria-current="page" href="/admin">Dashboard</a>
         </li>
         {% endif %}
       </ul>
