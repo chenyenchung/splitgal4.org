@@ -16,6 +16,19 @@ class fly_line(models.Model):
         ("N-term", "N-terminus tagging"),
         ("SA", "Gene trap with 5' splicing acceptors"),
     ]
+
+    DIMERIZER_STYLE = [
+        ("zip", "Leucine zipper"),
+        ("int", "Intein")
+    ]
+
+    STATUS_LIST = [
+        ("val", "Validated"),
+        ("ava", "Available"),
+        ("inp", "In progress"),
+        ("req", "Requested / planned")
+    ]
+
     CHRS = [
         ("chrX", "chromosome X"),
         ("chr2R", "chromosome 2R"),
@@ -47,6 +60,12 @@ class fly_line(models.Model):
         choices=CASSETTE_STYLE,
         blank=False
     )
+    dimerizer = models.CharField(
+        max_length=8,
+        choices=DIMERIZER_STYLE,
+        blank=False,
+        default="zip"
+    )
     ins_seqname = models.CharField(
        max_length=8,
        choices=CHRS,
@@ -57,8 +76,19 @@ class fly_line(models.Model):
         blank=True,
         default=-1
     )
-    contributor = models.CharField(max_length=256, blank=False)
+    contributor = models.CharField(
+        max_length=256, blank=False, default="Anonymous"
+    )
+    uploader = models.CharField(
+        max_length=256, blank=False, default="Anonymous"
+    )
     reference = models.CharField(max_length=1024, blank=True, default="")
+    status = models.CharField(
+        max_length=4,
+        blank=False,
+        default="ava",
+        choices=STATUS_LIST
+    )
     internal_sharing = models.BooleanField(default=False, blank=False)
     need_review = models.BooleanField(default=False, blank=False)
     date_created = models.DateTimeField(default = timezone.now)
