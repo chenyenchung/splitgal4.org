@@ -28,7 +28,7 @@ def user_logout(request):
 
 def user_register(request):
     if request.method == "POST":
-      form = UserRegistrationForm(request.POST)
+      form = CustomUserCreationForm(request.POST)
       if form.is_valid():
           form.save()
           username = form.cleaned_data['username']

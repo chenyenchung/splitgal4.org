@@ -1,8 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import User
 from django import forms
 from .models import CustomUser
 
+User = CustomUser
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
         widget=forms.EmailInput(
@@ -31,11 +31,34 @@ class CustomUserCreationForm(UserCreationForm):
         )
     )
 
+    affiliation = forms.CharField(
+        max_length=1024,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Please enter your affiliation (optional)',
+            }
+        )
+    )
+
+    lab = forms.CharField(
+        max_length=128,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Please enter your lab (optional)',
+            }
+        )
+    )
+    
+
+
     class Meta:
         model = User
         fields = (
             'username', 'first_name', "last_name",
-            'email', 'password1', 'password2'
+            'email', 'password1', 'password2',
+            'affiliation', 'lab'
         )
 
     def __init__(self, *args, **kwargs):
