@@ -1,5 +1,4 @@
-from django.http import HttpResponse
-from django.template import loader
+from django.shortcuts import render
 from django.db.models import Q
 from .models import fly_line
 
@@ -25,9 +24,6 @@ def index(request):
              Q(internal_sharing=False))
         ).order_by("id")
 
-    template = loader.get_template("index.html")
-    context = {
+    return render(request, "index.html", {
         "line_list": line_list,
-    }
-
-    return HttpResponse(template.render(context, request))
+    })
