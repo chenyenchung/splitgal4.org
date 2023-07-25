@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.core.exceptions import ValidationError
 from django import forms
 from .models import CustomUser
 
@@ -12,6 +13,7 @@ class CustomUserCreationForm(UserCreationForm):
             }
         )
     )
+
     first_name = forms.CharField(
         max_length=128,
         widget=forms.TextInput(
@@ -52,8 +54,6 @@ class CustomUserCreationForm(UserCreationForm):
         ),
         required=False
     )
-    
-
 
     class Meta:
         model = User
@@ -63,6 +63,16 @@ class CustomUserCreationForm(UserCreationForm):
             'affiliation', 'lab'
         )
 
+    # Ensure unique email
+    # https://stackoverflow.com/questions/53461410/make-user-email-unique-django
+    def clean(self):
+       email = self.cleaned_data.get('email')
+       if User.objects.filter(email=email).exists():
+            raise ValidationError(
+                "This email has been used to register an account."
+            )
+       return self.cleaned_data
+    
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
 
