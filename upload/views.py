@@ -3,13 +3,16 @@ from django.contrib import messages
 from .forms import UploadFileForm
 from splitgal4_lines.models import fly_line
 import openpyxl
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 def create_new_line(request):
     return redirect('home')
 
+def verification_test(user):
+    return user.verified
+
 @login_required(login_url="/members/user_login")
-@permission_required("members.verified", raise_exception=True)
+@user_passes_test(verification_test, login_url="/members/user_login")
 def upload_file(request):
     def add_to_model(data):
         for entry in data:
@@ -37,8 +40,8 @@ def upload_file(request):
             }
 
             status_dict = {
-                "Validated": "val",
-                "Available": "ava",
+                "Available (Validated)": "val",
+                "Available (Not validated)": "ava",
                 "In progress": "inp",
                 "Planned": "req",
             }

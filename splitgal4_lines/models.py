@@ -74,7 +74,8 @@ class fly_line(models.Model):
     )
     ins_site = models.BigIntegerField(
         blank=True,
-        default=-1
+        null=True,
+        default=None
     )
     contributor = models.CharField(
         max_length=256, blank=False, default="Anonymous"

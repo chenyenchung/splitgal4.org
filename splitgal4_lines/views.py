@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
+from django.contrib import messages
 from .models import fly_line
+from .forms import NewLineForm
 
 def index(request):
     signed_in = request.user.is_authenticated
@@ -51,3 +53,38 @@ def index(request):
         "line_list": line_list,
         "keyword": query,
     })
+
+def add_line(request):
+    try:
+        prefill_contr = request.user.lab
+    except:
+        prefill_contr = 'Anonymous user'
+
+    if request.user.username == '':
+        prefill_uploader = 'Anonymous user'
+    else:
+        prefill_uploader = request.user.username
+
+    if request.method == "POST":
+      form = NewLineForm(request.POST)
+      if form.is_valid():   
+          gene = request.POST["gene_name"]
+          form.save()
+          messages.success(
+              request, (f'Your line for {gene} is uploaded successfully.')
+          )
+          return redirect('home')
+    else:
+      form = NewLineForm(
+          initial = {
+              'contributor': prefill_contr,
+              'uploader': prefill_uploader
+          }
+      )
+
+    return render(request, 'idv_upload.html', {
+         'form': form,
+      })
+
+def readme(request):
+    return(render(request, 'readme.html'))
