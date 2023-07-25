@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+  {% if keyword %}
+  <div class="alert alert-success" role="alert">
+    <h3>Searching for: {{ keyword }}</h3>
+  </div>
+  
+  {% endif %}
   {% if line_list %}
     <table class="table table-hover">
       <th scope="col">ID</th>
@@ -10,6 +15,7 @@
       <th scope="col">Insertion site</th>
       <th scope="col">Insertion style</th>
       <th scope="col">Contributor</th>
+      <th scope="col">Availability</th>
       <th scope="col">Citation</th>
       {% for line in line_list %}
         <tr>
@@ -30,6 +36,7 @@
             {% endif %}
           </td>
           <td>{{ line.cassette }}</td>
+          <td>{{ line.status }}</td>
           <td>{{ line.contributor }}</td>
           <td>{{ line.reference }}</td>
         </tr>

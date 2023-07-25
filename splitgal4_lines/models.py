@@ -9,7 +9,7 @@ class fly_line(models.Model):
         ("VP16", "VP16 activation domain"),
         ("p65", "p65 activation domain"),
         ("GAL4AD", "GAL4 activation domain"),
-        ("NA", "Not applicable")
+        ("AD", "Unknown activation domain")
     ]
     CASSETTE_STYLE = [
         ("C-term", "C-terminus tagging"),
@@ -23,10 +23,10 @@ class fly_line(models.Model):
     ]
 
     STATUS_LIST = [
-        ("val", "Validated"),
-        ("ava", "Available"),
+        ("val", "Available (Validated)"),
+        ("ava", "Available (Not validated)"),
         ("inp", "In progress"),
-        ("req", "Requested / planned")
+        ("req", "Planned")
     ]
 
     CHRS = [
