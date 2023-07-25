@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+<div class="shadow p-3 mb-5 bg-body rounded">
+  <h1>Upload</h1>  
+
+  <form action="" method=POST class="m-1" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <br/>
+    <p>
+      To add multiple lines at once, please
+      <a href="{% static 'template.xlsx' %}">download this template</a>. After
+      you fill it up, please upload the spreadsheet below:
+    </p>
+    
+    <div class="form-floating container-sm">
+      {{ form.as_p }}
+
+    <input type="submit" name='upload' value="Upload" class="btn btn-secondary">
+    </div>
+  </form>
+</div>
+{% endblock %}
