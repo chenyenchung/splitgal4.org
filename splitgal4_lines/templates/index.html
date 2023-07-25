@@ -23,9 +23,9 @@
           <td>{{ line.gene_name }}</td>
           <td>
             {% if line.effector_type == "DBD" %}
-              DBD
+              {{ line.get_effector_type_display }}
             {% else %}
-            {{ line.activator_type }}
+            {{ line.get_activator_type_display }}
             {% endif %}
           </td>
           <td>
@@ -35,9 +35,9 @@
               {{ line.ins_seqname }}:{{ line.ins_site }}
             {% endif %}
           </td>
-          <td>{{ line.cassette }}</td>
-          <td>{{ line.status }}</td>
+          <td>{{ line.get_cassette_display }}</td>
           <td>{{ line.contributor }}</td>
+          <td>{{ line.get_status_display }}</td>
           <td>{{ line.reference }}</td>
         </tr>
       {% endfor %}
