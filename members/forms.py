@@ -38,7 +38,8 @@ class CustomUserCreationForm(UserCreationForm):
                 'class': 'form-control',
                 'placeholder': 'Please enter your affiliation (optional)',
             }
-        )
+        ),
+        required=False
     )
 
     lab = forms.CharField(
@@ -48,7 +49,8 @@ class CustomUserCreationForm(UserCreationForm):
                 'class': 'form-control',
                 'placeholder': 'Please enter your lab (optional)',
             }
-        )
+        ),
+        required=False
     )
     
 

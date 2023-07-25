@@ -1,0 +1,10 @@
+{% autoescape off %}
+Hi {{ user.first_name}},
+
+    Welcome to splitgal4.org! Please click on the link below to confirm your 
+registration: http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Best regards,
+Your System Administrator
+
+{% endautoescape %}
