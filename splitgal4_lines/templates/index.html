@@ -32,7 +32,11 @@
             {% if line.source_id %}
               {{ line.source_id }}
             {% else %}
-              {{ line.ins_seqname }}:{{ line.ins_site }}
+              {% if line.ins_site is not None %}
+                {{ line.ins_seqname }}:{{ line.ins_site }}
+              {% else %}
+                {{ line.ins_seqname }}
+              {% endif %}
             {% endif %}
           </td>
           <td>{{ line.get_cassette_display }}</td>
