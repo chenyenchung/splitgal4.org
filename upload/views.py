@@ -3,10 +3,13 @@ from django.contrib import messages
 from .forms import UploadFileForm
 from splitgal4_lines.models import fly_line
 import openpyxl
+from django.contrib.auth.decorators import login_required, permission_required
 
 def create_new_line(request):
     return redirect('home')
 
+@login_required(login_url="/members/user_login")
+@permission_required("members.verified", raise_exception=True)
 def upload_file(request):
     def add_to_model(data):
         for entry in data:
