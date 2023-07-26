@@ -20,7 +20,7 @@ you access to a dashboard to manage and update your lines.
 In addition, after sharing your lines, your account will have access to the
 lines that are marked as internal sharing only.
 
-### Improving the site<
+### Improving the site
 
 The platform is undering going active development, and we are happy to take
 any suggestions that will make it an easier and more accessible experience
