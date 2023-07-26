@@ -95,3 +95,6 @@ def add_line(request):
 
 def readme(request):
     return(render(request, 'readme.html'))
+
+def privacy(request):
+    return(render(request, 'privacy.html'))

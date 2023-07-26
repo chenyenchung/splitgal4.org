@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>How to use this site</h2>
+
+<p>
+This site is set up to streamline the efforts to make and share split-Gal4 
+lines.
+</p>
+
+<h3>Sharing a line</h3>
+
+<p>
+To share a line without an account, please use the <a href="{% url 'add_line' %}">Add a line</a>
+link and fill the form. If you have logged in, your email lab will be
+pre-filled as the contributor.
+</p>
+
+<p>
+To share many lines at once, you can register and verify your account, and use 
+the template from <a href="{% url 'upload' %}">Batch upload</a>.
+</p>
+<h3>Why would I need an account?</h3>
+
+<p>
+The lines you shared will be associated with your account. The account grants
+you access to a <a href="/admin">Dashboard</a> to manage and update your lines.
+</p>
+
+<p>
+In addition, after sharing your lines, your account will have access to the
+lines that are marked as internal sharing only.
+</p>
+
+{% endblock %}
