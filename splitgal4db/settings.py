@@ -44,7 +44,8 @@ SECRET_KEY = get_secret('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['splitgal4.org', 'www.splitgal4.org']
+ALLOWED_HOSTS = ['localhost', 'www.splitgal4.org', 'splitgal4.org']
+CSRF_TRUSTED_ORIGINS = ["https://www.splitgal4.org", "https://splitgal4.org"]
 
 
 # Application definition
