@@ -5,6 +5,8 @@ from splitgal4_lines.models import fly_line
 import openpyxl
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+EXAMPLE_NOTE = "This is an example. Please remove it before you upload."
+
 def create_new_line(request):
     return redirect('home')
 
@@ -18,15 +20,14 @@ def upload_file(request):
         for entry in data:
             entry = [i if i is not None else "" for i in entry]
 
-            if entry[1] == "GAL4DBD":
-                effector_type = "DBD"
-                activator_type = ""
-            else:
-                effector_type = "AD"
-                activator_type = entry[1]
+            if entry[10] == EXAMPLE_NOTE:
+                continue
+            
+            try:
+                entry[4] = int(entry[4])
+            except ValueError:
+                entry[4] = None
 
-            if entry[1] == "Unknown AD":
-                activator_type = "AD"
 
             cassette_dict = {
                 "5' splicing acceptor": "SA",
@@ -40,16 +41,14 @@ def upload_file(request):
             }
 
             status_dict = {
-                "Available (Validated)": "1val",
-                "Available (Not validated)": "2ava",
-                "In progress": "3inp",
-                "Planned": "4req",
+                "Available": "2ava",
+                "In progress": "2inp",
+                "Planned": "3req",
             }
 
             fly_line(
                 gene_name=entry[0],
-                effector_type=effector_type,
-                activator_type=activator_type,
+                effector_type=entry[1],
                 source_id=entry[2],
                 ins_seqname='chr' + entry[3],
                 ins_site=entry[4],
@@ -100,6 +99,10 @@ def handle_uploaded_file(f):
         row_data = list()
         for cell in row:
             row_data.append(str(cell.value))
+        
+        if row_data[10] == EXAMPLE_NOTE:
+            continue
+        
         excel_data.append(row_data)
         
     return excel_data

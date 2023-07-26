@@ -25,11 +25,7 @@
           <td>SG{{ line.id }}</td>
           <td>{{ line.gene_name }}</td>
           <td>
-            {% if line.effector_type == "DBD" %}
-              {{ line.effector_type }}
-            {% else %}
-            {{ line.activator_type }}
-            {% endif %}
+            {{ line.effector_type }}
           </td>
           <td>
             {% if line.source_id %}

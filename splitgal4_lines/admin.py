@@ -51,7 +51,6 @@ class fly_line_admin(admin.ModelAdmin):
         'id',
         'gene_name',
         'effector_type',
-        'activator_type',
         'cassette',
         'contributor',
     )

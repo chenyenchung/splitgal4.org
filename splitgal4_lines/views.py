@@ -19,7 +19,7 @@ def index(request):
                 (
                     Q(gene_name__icontains=query) |
                     Q(effector_type__icontains=query) |
-                    Q(activator_type__icontains=query) |
+                    Q(source_id__icontains=query) |
                     Q(cassette__icontains=query) |
                     Q(contributor__icontains=query)|
                     Q(reference__icontains=query)
@@ -39,8 +39,8 @@ def index(request):
                 (
                     Q(gene_name__icontains=query) |
                     Q(effector_type__icontains=query) |
-                    Q(activator_type__icontains=query) |
                     Q(cassette__icontains=query) |
+                    Q(source_id__icontains=query) |
                     Q(contributor__icontains=query)|
                     Q(reference__icontains=query)
                 )

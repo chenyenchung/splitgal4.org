@@ -3,9 +3,6 @@ from django.utils import timezone
 class fly_line(models.Model):
     EFFECTORS = [
         ("DBD", "DNA-binding domain"),
-        ("AD", "Activation domain"),
-    ]
-    ACTIVATORS = [
         ("VP16", "VP16 activation domain"),
         ("p65", "p65 activation domain"),
         ("GAL4AD", "GAL4 activation domain"),
@@ -23,10 +20,9 @@ class fly_line(models.Model):
     ]
 
     STATUS_LIST = [
-        ("1val", "Available (Validated)"),
-        ("2ava", "Available (Not validated)"),
-        ("3inp", "In progress"),
-        ("4req", "Planned")
+        ("1ava", "Available"),
+        ("2inp", "In progress"),
+        ("3req", "Planned")
     ]
 
     CHRS = [
@@ -40,15 +36,9 @@ class fly_line(models.Model):
 
     gene_name = models.CharField(max_length=128, blank=False)
     effector_type = models.CharField(
-        max_length=3,
+        max_length=8,
         choices=EFFECTORS,
         blank=False
-    )
-    activator_type = models.CharField(
-        max_length=6,
-        choices=ACTIVATORS,
-        blank=True,
-        default="NA"
     )
     source_id = models.CharField(
         max_length=16,

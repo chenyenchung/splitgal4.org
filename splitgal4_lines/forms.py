@@ -24,21 +24,12 @@ class NewLineForm(ModelForm):
         )
     )
 
-    activator_type = forms.CharField(
-        max_length=6,
-        widget=forms.Select(
-            choices=fly_line.ACTIVATORS,
-            attrs={
-                'class': 'form-control'
-            }
-        )
-    )
     source_id = forms.CharField(
         max_length=16,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'If this line is from a MiMIC/CRIMIC line, please provide its ID (CR/MI)',
+                'placeholder': 'If this line is from a MiMIC/CRIMIC line, please provide its ID (e.g., CR12345 or MI54321)',
             }
         ),
         required=False
@@ -72,7 +63,7 @@ class NewLineForm(ModelForm):
         )
     )
     ins_site = forms.IntegerField(
-        label='Insertion coordinate',
+        label='Insertion coordinate (if known)',
         widget=forms.NumberInput(
             attrs={
                 'class': 'form-control'
@@ -95,6 +86,7 @@ class NewLineForm(ModelForm):
     )
 
     reference = forms.CharField(
+        label='Citation info (Optional; PMID is preferred)',
         max_length=1024,
         widget=forms.TextInput(
             attrs={
@@ -114,6 +106,7 @@ class NewLineForm(ModelForm):
         )
     )
     contact = forms.EmailField(
+        label='Contact email (for reagent requests)',
         required=True,
         widget=forms.EmailInput(
             attrs={
@@ -129,7 +122,7 @@ class NewLineForm(ModelForm):
     class Meta:
         model = fly_line
         fields = (
-            'gene_name', 'effector_type', 'activator_type', 'source_id',
+            'gene_name', 'effector_type', 'source_id',
             'cassette', 'dimerizer', 'ins_seqname', 'ins_site', 'contributor',
             'uploader', 'reference', 'status', 'contact', 'internal_sharing'
         )
