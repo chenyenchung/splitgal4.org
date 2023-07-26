@@ -6,7 +6,8 @@ class fly_line(models.Model):
         ("VP16", "VP16 activation domain"),
         ("p65", "p65 activation domain"),
         ("GAL4AD", "GAL4 activation domain"),
-        ("AD", "Unknown activation domain")
+        ("QF2AD", "QF2 activation domain"),
+        ("AD", "Other ADs")
     ]
     CASSETTE_STYLE = [
         ("C-term", "C-terminus tagging"),
