@@ -18,7 +18,8 @@ from django.core.exceptions import ImproperlyConfigured
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-STATIC_URL = '/static/' 
+STATIC_URL = 'static/' 
+STATIC_ROOT = "/var/www/splitgal4.org/static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
