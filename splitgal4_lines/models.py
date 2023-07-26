@@ -23,10 +23,10 @@ class fly_line(models.Model):
     ]
 
     STATUS_LIST = [
-        ("val", "Available (Validated)"),
-        ("ava", "Available (Not validated)"),
-        ("inp", "In progress"),
-        ("req", "Planned")
+        ("1val", "Available (Validated)"),
+        ("2ava", "Available (Not validated)"),
+        ("3inp", "In progress"),
+        ("4req", "Planned")
     ]
 
     CHRS = [
@@ -90,6 +90,7 @@ class fly_line(models.Model):
         default="ava",
         choices=STATUS_LIST
     )
+    contact = models.EmailField(max_length=256)
     internal_sharing = models.BooleanField(default=False, blank=False)
     need_review = models.BooleanField(default=False, blank=False)
     date_created = models.DateTimeField(default = timezone.now)

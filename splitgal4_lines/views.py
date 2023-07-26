@@ -5,8 +5,9 @@ from .models import fly_line
 from .forms import NewLineForm
 
 def index(request):
+
     signed_in = request.user.is_authenticated
-    query = request.GET.get('search-keyword')   
+    query = request.GET.get('search-keyword') 
     if signed_in:
         see_all = request.user.is_staff
         if query:        
@@ -23,14 +24,14 @@ def index(request):
                     Q(contributor__icontains=query)|
                     Q(reference__icontains=query)
                 )
-            ).order_by("id")
+            ).order_by("status")
         else:
             line_list = fly_line.objects.filter(
                 (Q(internal_sharing=see_all) |
                 Q(internal_sharing=False) |
                 Q(contributor=request.user.lab)|
                 Q(uploader=request.user.username))
-            ).order_by("id")
+            ).order_by("status")
     else:
         if query:        
             line_list = fly_line.objects.filter(
@@ -60,6 +61,11 @@ def add_line(request):
     except:
         prefill_contr = 'Anonymous user'
 
+    try:
+        prefill_email = request.user.email
+    except:
+        prefill_email = ''
+
     if request.user.username == '':
         prefill_uploader = 'Anonymous user'
     else:
@@ -78,7 +84,8 @@ def add_line(request):
       form = NewLineForm(
           initial = {
               'contributor': prefill_contr,
-              'uploader': prefill_uploader
+              'uploader': prefill_uploader,
+              'contact': prefill_email
           }
       )
 

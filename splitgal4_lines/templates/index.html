@@ -16,6 +16,9 @@
       <th scope="col">Insertion style</th>
       <th scope="col">Contributor</th>
       <th scope="col">Availability</th>
+      {% if user.is_superuser or user.is_staff %}
+        <th scope="col">Internal sharing only</th>
+      {% endif %}
       <th scope="col">Citation</th>
       {% for line in line_list %}
         <tr>
@@ -23,9 +26,9 @@
           <td>{{ line.gene_name }}</td>
           <td>
             {% if line.effector_type == "DBD" %}
-              {{ line.get_effector_type_display }}
+              {{ line.effector_type }}
             {% else %}
-            {{ line.get_activator_type_display }}
+            {{ line.activator_type }}
             {% endif %}
           </td>
           <td>
@@ -39,9 +42,26 @@
               {% endif %}
             {% endif %}
           </td>
-          <td>{{ line.get_cassette_display }}</td>
-          <td>{{ line.contributor }}</td>
+          <td>{{ line.cassette }}</td>
+          <td>
+            <a href="mailto:{{ line.contact }}">
+              {% if line.contributor %}
+                {{ line.contributor }}
+              {% else %}
+                {{ line.contact }}
+              {% endif %}
+            </a>
+          </td>
           <td>{{ line.get_status_display }}</td>
+            {% if user.is_superuser or user.is_staff %}
+              <td>
+                {% if line.internal_sharing is True %}
+                  Yes
+                {% else %}
+                  No
+                {% endif %}
+              </td>
+            {% endif %}
           <td>{{ line.reference }}</td>
         </tr>
       {% endfor %}

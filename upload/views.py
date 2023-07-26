@@ -40,10 +40,10 @@ def upload_file(request):
             }
 
             status_dict = {
-                "Available (Validated)": "val",
-                "Available (Not validated)": "ava",
-                "In progress": "inp",
-                "Planned": "req",
+                "Available (Validated)": "1val",
+                "Available (Not validated)": "2ava",
+                "In progress": "3inp",
+                "Planned": "4req",
             }
 
             fly_line(
@@ -60,6 +60,7 @@ def upload_file(request):
                 reference=entry[9],
                 uploader=request.user.username,
                 contributor=request.user.lab,
+                contact=request.user.email,
                 need_review=True
             ).save()
 

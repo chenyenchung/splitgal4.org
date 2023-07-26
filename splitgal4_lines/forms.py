@@ -87,8 +87,7 @@ class NewLineForm(ModelForm):
             attrs={
                 'class': 'form-control',
             }
-        ),
-        required=False
+        )
     )
 
     uploader = forms.CharField(
@@ -114,12 +113,23 @@ class NewLineForm(ModelForm):
             }
         )
     )
-    internal_sharing = forms.BooleanField(required=False)
+    contact = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control'
+            }
+        )
+    )
+    internal_sharing = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput()
+    )
 
     class Meta:
         model = fly_line
         fields = (
             'gene_name', 'effector_type', 'activator_type', 'source_id',
             'cassette', 'dimerizer', 'ins_seqname', 'ins_site', 'contributor',
-            'uploader', 'reference', 'status', 'internal_sharing'
+            'uploader', 'reference', 'status', 'contact', 'internal_sharing'
         )
