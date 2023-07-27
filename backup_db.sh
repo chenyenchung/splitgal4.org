@@ -1,5 +1,5 @@
 #!/bin/bash
-IMAGE=333ac3077f3e
+IMAGE=3a6511dd7bde
 TIMESTAMP=$(date +%Y%m%d)
 WORKDIR='/home/splitgal4_org'
 BKUPPATH='/home/chenyenjung/splitgal4_org/backup'
