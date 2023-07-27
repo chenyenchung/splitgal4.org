@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 class fly_line(models.Model):
     EFFECTORS = [
-        ("DBD", "DNA-binding domain"),
+        ("GAL4DBD", "DNA-binding domain"),
         ("VP16", "VP16 activation domain"),
         ("p65", "p65 activation domain"),
         ("GAL4AD", "GAL4 activation domain"),
