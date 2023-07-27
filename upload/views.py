@@ -129,12 +129,12 @@ def handle_uploaded_file(f, request):
             if status_err:
                 messages.error(
                     request,
-                        ('Error: Unknown status found: ' + ', '.join(status_err) + '.' + err_show[0])
+                        ('Error: Unknown status found: ' + ', '.join(status_err) + '. ' + err_show[0])
                 )
             if dimer_err:
                 messages.error(
                     request,
-                        ('Error: Unknown dimerization domain found: ' + ', '.join(dimer_err) + '.' + err_show[1])
+                        ('Error: Unknown dimerization domain found: ' + ', '.join(dimer_err) + '. ' + err_show[1])
                 )
             return 1
             
