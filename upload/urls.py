@@ -5,5 +5,5 @@ from . import views
 
 urlpatterns = [
     path("batch_upload", views.upload_file, name="upload"),
-    path("add_new", views.create_new_line, name="add_new"),
+    path("add_line", views.add_line, name="add_line"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

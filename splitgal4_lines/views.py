@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
 from .models import fly_line
-from .forms import NewLineForm
 
 def index(request):
 

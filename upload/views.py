@@ -145,3 +145,41 @@ def handle_uploaded_file(f, request):
             ('The format of the template appears wrong. The website looks for sheet "List of lines"')
         )
         return 1
+
+def add_line(request):
+    try:
+        prefill_contr = request.user.lab
+    except:
+        prefill_contr = 'Anonymous user'
+
+    try:
+        prefill_email = request.user.email
+    except:
+        prefill_email = ''
+
+    if request.user.username == '':
+        prefill_uploader = 'Anonymous user'
+    else:
+        prefill_uploader = request.user.username
+
+    if request.method == "POST":
+      form = NewLineForm(request.POST)
+      if form.is_valid():   
+          gene = request.POST["gene_name"]
+          form.save()
+          messages.success(
+              request, (f'Your line for {gene} is uploaded successfully.')
+          )
+          return redirect('home')
+    else:
+      form = NewLineForm(
+          initial = {
+              'contributor': prefill_contr,
+              'uploader': prefill_uploader,
+              'contact': prefill_email
+          }
+      )
+
+    return render(request, 'idv_upload.html', {
+         'form': form,
+      })
