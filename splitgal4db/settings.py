@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import json, os
 from django.core.exceptions import ImproperlyConfigured
-
-
+from .utils import get_secret
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +23,11 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+# Path to batch upload template
+TEMPLATE_PATH = 'static/template.xlsx'
+# Note field for example entries. Rows matching this will be ignored on upload.
+EXAMPLE_NOTE = "This is an example. Please remove it before you upload."
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -32,24 +36,19 @@ STATICFILES_DIRS = [
 with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
     secrets = json.load(secrets_file)
 
-def get_secret(setting, secrets=secrets):
-    """Get secret setting or fail with ImproperlyConfigured"""
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise ImproperlyConfigured("Set the {} setting".format(setting))
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret('SECRET_KEY')
+SECRET_KEY = get_secret('SECRET_KEY', secrets)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'www.splitgal4.org', 'splitgal4.org']
 CSRF_TRUSTED_ORIGINS = ["https://www.splitgal4.org", "https://splitgal4.org"]
-SECURE_HSTS_SECONDS = 3600
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
@@ -154,11 +153,11 @@ AUTH_USER_MODEL = "members.CustomUser"
 
 # Emailing settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = get_secret('EMAIL_HOST')
-DEFAULT_FROM_EMAIL = get_secret('DEFAULT_FROM_EMAIL')
-EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD')
-EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER')
-EMAIL_PORT = get_secret('EMAIL_PORT')
+EMAIL_HOST = get_secret('EMAIL_HOST', secrets)
+DEFAULT_FROM_EMAIL = get_secret('DEFAULT_FROM_EMAIL', secrets)
+EMAIL_HOST_PASSWORD = get_secret('EMAIL_HOST_PASSWORD', secrets)
+EMAIL_HOST_USER = get_secret('EMAIL_HOST_USER', secrets)
+EMAIL_PORT = get_secret('EMAIL_PORT', secrets)
 EMAIL_USE_TLS = True
 
 PASSWORD_RESET_TIMEOUT = 14400

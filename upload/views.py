@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect
+from django.conf import settings as settings
 from django.contrib import messages
-from .forms import UploadFileForm
-from splitgal4_lines.models import fly_line
-import openpyxl
 from django.contrib.auth.decorators import login_required, user_passes_test
+import openpyxl
 
-EXAMPLE_NOTE = "This is an example. Please remove it before you upload."
-TEMPLATE_CNAMES = [
-    'Gene name', 'Effectors', 'MiMIC/CRIMIC #', 'chromosome',
-    'location', 'cassette style', 'dimerization domain', 'status',
-    'private', 'citation', 'Note'
-]
+from .forms import UploadFileForm, NewLineForm
+from splitgal4_lines.models import fly_line
+from splitgal4db.utils import get_default_types, get_template_cname
+
+
+
+EXAMPLE_NOTE = settings.EXAMPLE_NOTE
+TEMPLATE_CNAMES = get_template_cname(settings.TEMPLATE_PATH)
+
 DIMERIZER_DICT = {
     "zip": "zip",
     "intein": "int"
@@ -21,9 +23,6 @@ STATUS_DICT = {
     "In progress": "2inp",
     "Planned": "3req",
 }
-
-def create_new_line(request):
-    return redirect('home')
 
 def verification_test(user):
     return user.verified
@@ -52,7 +51,7 @@ def upload_file(request):
                 cassette=entry[5],
                 dimerizer=DIMERIZER_DICT[entry[6]],
                 status=STATUS_DICT[entry[7]],
-                internal_sharing=entry[8] == 'Private',
+                private=entry[8] == 'Private',
                 reference=entry[9],
                 uploader=request.user.username,
                 contributor=request.user.lab,
