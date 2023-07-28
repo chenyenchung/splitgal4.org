@@ -11,8 +11,8 @@ def index(request):
         see_all = request.user.is_staff
         if query:        
             line_list = fly_line.objects.filter(
-                (Q(internal_sharing=see_all) |
-                Q(internal_sharing=False) |
+                (Q(private=see_all) |
+                Q(private=False) |
                 Q(contributor=request.user.lab)|
                 Q(uploader=request.user.username)) & 
                 (
@@ -26,15 +26,15 @@ def index(request):
             ).order_by("status")
         else:
             line_list = fly_line.objects.filter(
-                (Q(internal_sharing=see_all) |
-                Q(internal_sharing=False) |
+                (Q(private=see_all) |
+                Q(private=False) |
                 Q(contributor=request.user.lab)|
                 Q(uploader=request.user.username))
             ).order_by("status")
     else:
         if query:        
             line_list = fly_line.objects.filter(
-                Q(internal_sharing=False) & 
+                Q(private=False) & 
                 (
                     Q(gene_name__icontains=query) |
                     Q(effector_type__icontains=query) |
@@ -46,7 +46,7 @@ def index(request):
             ).order_by("id")
         else:
             line_list = fly_line.objects.filter(
-                Q(internal_sharing=False)
+                Q(private=False)
             ).order_by("id")
 
     return render(request, "index.html", {

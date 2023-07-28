@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 class fly_line(models.Model):
     EFFECTORS = [
-        ("GAL4DBD", "DNA-binding domain"),
+        ("GAL4DBD", "GAL4DBD"),
         ("VP16", "VP16 activation domain"),
         ("p65", "p65 activation domain"),
         ("GAL4AD", "GAL4 activation domain"),
@@ -82,7 +82,7 @@ class fly_line(models.Model):
         choices=STATUS_LIST
     )
     contact = models.EmailField(max_length=256)
-    internal_sharing = models.BooleanField(default=False, blank=False)
+    private = models.BooleanField(default=False, blank=False)
     need_review = models.BooleanField(default=False, blank=False)
     date_created = models.DateTimeField(default = timezone.now)
 
