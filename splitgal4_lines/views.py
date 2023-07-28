@@ -53,44 +53,12 @@ def index(request):
         "line_list": line_list,
         "keyword": query,
     })
-
-def add_line(request):
-    try:
-        prefill_contr = request.user.lab
-    except:
-        prefill_contr = 'Anonymous user'
-
-    try:
-        prefill_email = request.user.email
-    except:
-        prefill_email = ''
-
-    if request.user.username == '':
-        prefill_uploader = 'Anonymous user'
-    else:
-        prefill_uploader = request.user.username
-
-    if request.method == "POST":
-      form = NewLineForm(request.POST)
-      if form.is_valid():   
-          gene = request.POST["gene_name"]
-          form.save()
-          messages.success(
-              request, (f'Your line for {gene} is uploaded successfully.')
-          )
-          return redirect('home')
-    else:
-      form = NewLineForm(
-          initial = {
-              'contributor': prefill_contr,
-              'uploader': prefill_uploader,
-              'contact': prefill_email
-          }
-      )
-
-    return render(request, 'idv_upload.html', {
-         'form': form,
-      })
+    
+def show_idv_line(request, sg_id):
+    sgline = fly_line.objects.get(id = sg_id)
+    return(render(request, 'show_detail.html', {
+        "line": sgline
+    }))
 
 def readme(request):
     return(render(request, 'readme.html'))

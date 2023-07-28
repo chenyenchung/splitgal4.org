@@ -9,56 +9,45 @@
   {% endif %}
   {% if line_list %}
     <table class="table table-hover">
-      <th scope="col">ID</th>
+      <th scope="col">SGID</th>
       <th scope="col">Gene symbol</th>
       <th scope="col">Effector</th>
-      <th scope="col">Insertion site</th>
-      <th scope="col">Insertion style</th>
+      <th scope="col">Status</th>
+      <th scope="col">Uploader</th>
       <th scope="col">Contributor</th>
-      <th scope="col">Availability</th>
       {% if user.is_superuser or user.is_staff %}
-        <th scope="col">Internal sharing only</th>
+        <th scope="col">Private</th>
       {% endif %}
-      <th scope="col">Citation</th>
       {% for line in line_list %}
         <tr>
-          <td>SG{{ line.id }}</td>
+          <td><a href="{% url 'details' line.id %}">
+            SG{{ line.id }}
+          </a></td>
           <td>{{ line.gene_name }}</td>
           <td>
             {{ line.effector_type }}
           </td>
           <td>
-            {% if line.source_id %}
-              {{ line.source_id }}
-            {% else %}
-              {% if line.ins_site is not None %}
-                {{ line.ins_seqname }}:{{ line.ins_site }}
-              {% else %}
-                {{ line.ins_seqname }}
-              {% endif %}
-            {% endif %}
-          </td>
-          <td>{{ line.cassette }}</td>
-          <td>
             <a href="mailto:{{ line.contact }}">
-              {% if line.contributor %}
-                {{ line.contributor }}
+              {% if line.uploader %}
+                {{ line.uploader }}
               {% else %}
                 {{ line.contact }}
               {% endif %}
             </a>
           </td>
-          <td>{{ line.get_status_display }}</td>
-            {% if user.is_superuser or user.is_staff %}
-              <td>
-                {% if line.internal_sharing is True %}
-                  Yes
-                {% else %}
-                  No
-                {% endif %}
-              </td>
+          {% if user.is_superuser or user.is_staff %}
+          <td>
+            {% if line.private is True %}
+              Yes
+            {% else %}
+              No
             {% endif %}
-          <td>{{ line.reference }}</td>
+          </td>
+        {% endif %
+          <td>{{ line.get_status_display }}</td>
+}
+          <td> {{ line.contributor }}</td>
         </tr>
       {% endfor %}
     </table>
