@@ -57,19 +57,7 @@ def upload_file(request):
                 private=entry[TEMPLATE.get_field_index('private')] == "Private",
                 citation=entry[TEMPLATE.get_field_index('citation')],
                 notes=entry[TEMPLATE.get_field_index('notes')],
-                gene_name=entry[0],
-                effector_type=entry[1],
-                source_id=entry[2],
-                ins_seqname='chr' + entry[3],
-                ins_site=entry[4],
-                cassette=entry[5],
-                dimerizer=DIMERIZER_DICT[entry[6]],
-                status=STATUS_DICT[entry[7]],
-                private=entry[8] == 'Private',
-                reference=entry[9],
-                uploader=request.user.username,
-                contributor=request.user.lab,
-                contact=request.user.email,
+                uploader=request.user,
                 contributor=contributor,
                 contact=contact,
                 need_review=True
@@ -196,7 +184,12 @@ def add_line(request):
 
 
     if request.method == "POST":
-      form = NewLineForm(request.POST)
+      if request.user.is_authenticated:
+        init_dict['uploader'] = request.user
+        form = NewLineForm(request.POST)
+      else:
+        form = AnonNewLineForm(request.POST)
+
       if form.is_valid():   
           gene = request.POST["gene_name"]
           form.save()
@@ -204,14 +197,14 @@ def add_line(request):
               request, (f'Your line for {gene} is uploaded successfully.')
           )
           return redirect('home')
+
     else:
-      form = NewLineForm(
-          initial = {
-              'contributor': prefill_contr,
-              'uploader': prefill_uploader,
-              'contact': prefill_email
-          }
-      )
+      if request.user.is_authenticated:
+        init_dict['uploader'] = request.user
+        form = NewLineForm(initial=init_dict)
+      else:
+        form = AnonNewLineForm(initial=init_dict)
+
 
     return render(request, 'idv_upload.html', {
          'form': form,

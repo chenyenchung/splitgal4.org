@@ -88,8 +88,10 @@ class NewLineForm(ModelForm):
         )
     )
 
-    uploader = forms.CharField(
-        widget=forms.HiddenInput()
+    uploader = forms.ModelChoiceField(
+        queryset = CustomUser.objects.all(),
+        widget=forms.HiddenInput(),
+        required=False
     )
 
     citation = forms.CharField(
@@ -142,5 +144,14 @@ class NewLineForm(ModelForm):
         fields = (
             'gene_name', 'effector_type', 'source_id',
             'cassette', 'dimerizer', 'ins_seqname', 'ins_site', 'contributor',
-            'uploader', 'reference', 'status', 'contact', 'private'
+            'uploader', 'citation', 'status', 'contact', 'notes', 'private'
+        )
+
+class AnonNewLineForm(NewLineForm):
+    class Meta:
+        model = fly_line
+        fields = (
+            'gene_name', 'effector_type', 'source_id',
+            'cassette', 'dimerizer', 'ins_seqname', 'ins_site', 'contributor',
+            'citation', 'status', 'contact', 'notes', 'private'
         )

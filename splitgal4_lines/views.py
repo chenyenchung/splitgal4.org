@@ -14,7 +14,7 @@ def index(request):
                 (Q(private=see_all) |
                 Q(private=False) |
                 Q(contributor=request.user.lab)|
-                Q(uploader=request.user.username)) & 
+                Q(uploader=request.user)) & 
                 (
                     Q(gene_name__icontains=query) |
                     Q(effector_type__icontains=query) |
@@ -29,7 +29,7 @@ def index(request):
                 (Q(private=see_all) |
                 Q(private=False) |
                 Q(contributor=request.user.lab)|
-                Q(uploader=request.user.username))
+                Q(uploader=request.user))
             ).order_by("status")
     else:
         if query:        

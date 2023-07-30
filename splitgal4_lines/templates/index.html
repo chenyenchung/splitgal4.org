@@ -13,8 +13,7 @@
       <th scope="col">Gene symbol</th>
       <th scope="col">Effector</th>
       <th scope="col">Status</th>
-      <th scope="col">Uploader</th>
-      <th scope="col">Contributor</th>
+      <th scope="col">Contact</th>
       {% if user.is_superuser or user.is_staff %}
         <th scope="col">Private</th>
       {% endif %}
@@ -27,27 +26,26 @@
           <td>
             {{ line.effector_type }}
           </td>
+          <td>{{ line.get_status_display }}</td>
           <td>
-            <a href="mailto:{{ line.contact }}">
-              {% if line.uploader %}
-                {{ line.uploader }}
+            {% if line.contact %}
+              <a href="mailto:{{ line.contact }}">
+                {{ line.contributor }}
+              </a>
               {% else %}
-                {{ line.contact }}
-              {% endif %}
+                {{ line.contributor }}
+            {% endif %}
             </a>
           </td>
-          {% if user.is_superuser or user.is_staff %}
+        {% if user.is_superuser or user.is_staff %}
           <td>
-            {% if line.private is True %}
-              Yes
+            {% if line.private %}
+            Yes
             {% else %}
-              No
+            No
             {% endif %}
           </td>
-        {% endif %
-          <td>{{ line.get_status_display }}</td>
-}
-          <td> {{ line.contributor }}</td>
+        {% endif %}
         </tr>
       {% endfor %}
     </table>

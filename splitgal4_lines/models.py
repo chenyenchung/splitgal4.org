@@ -65,7 +65,11 @@ class fly_line(models.Model):
         default="https://www.ncbi.nlm.nih.gov/pmc/"
     )
     
-        choices=STATUS_LIST
+    uploader = models.ForeignKey(
+        "members.CustomUser",
+        on_delete=models.SET_NULL,
+        blank = True,
+        null = True
     )
     
 
