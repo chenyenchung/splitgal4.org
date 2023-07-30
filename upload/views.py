@@ -1,28 +1,17 @@
 from django.shortcuts import render, redirect
-from django.conf import settings as settings
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 import openpyxl
 
-from .forms import UploadFileForm, NewLineForm
+from .forms import UploadFileForm, NewLineForm, AnonNewLineForm
 from splitgal4_lines.models import fly_line
-from splitgal4db.utils import get_default_types, get_template_cname
 
 
 
 EXAMPLE_NOTE = settings.EXAMPLE_NOTE
-TEMPLATE_CNAMES = get_template_cname(settings.TEMPLATE_PATH)
-
-DIMERIZER_DICT = {
-    "zip": "zip",
-    "intein": "int"
-}
-
-STATUS_DICT = {
-    "Available": "1ava",
-    "In progress": "2inp",
-    "Planned": "3req",
-}
+TEMPLATE = settings.TEMPLATE
+TEMPLATE_CNAMES = TEMPLATE.field_labels
 
 def verification_test(user):
     return user.verified
@@ -34,15 +23,40 @@ def upload_file(request):
         for entry in data:
             entry = [i if i is not None else "" for i in entry]
 
-            if entry[10] == EXAMPLE_NOTE:
+            # The note field is always the last and not defined in
+            # the instruction
+            note_col = TEMPLATE.get_field_index('notes')
+
+            if entry[note_col] == EXAMPLE_NOTE:
                 continue
             
+            
             try:
-                entry[4] = int(entry[4])
+                entry[TEMPLATE.get_field_index('ins_site')] = int(entry[TEMPLATE.get_field_index('ins_site')])
             except ValueError:
-                entry[4] = None
+                entry[TEMPLATE.get_field_index('ins_site')] = None
+
+            # If the user provided alternative contributor, use it.
+            # Otherwise the host lab is the contributor.
+            if entry[TEMPLATE.get_field_index('contributor')] != '':
+                contributor = entry[TEMPLATE.get_field_index('contributor')]
+                contact = ''
+            else:
+                contributor = request.user.lab
+                contact = request.user.email
 
             fly_line(
+                gene_name=entry[TEMPLATE.get_field_index('gene_name')],
+                effector_type=entry[TEMPLATE.get_field_index('effector_type')],
+                source_id=entry[TEMPLATE.get_field_index('source_id')],
+                ins_seqname='chr' + entry[TEMPLATE.get_field_index('ins_seqname')],
+                ins_site=entry[TEMPLATE.get_field_index('ins_site')],
+                cassette=entry[TEMPLATE.get_field_index('cassette')],
+                dimerizer=entry[TEMPLATE.get_field_index('dimerizer')],
+                status=entry[TEMPLATE.get_field_index('status')],
+                private=entry[TEMPLATE.get_field_index('private')] == "Private",
+                citation=entry[TEMPLATE.get_field_index('citation')],
+                notes=entry[TEMPLATE.get_field_index('notes')],
                 gene_name=entry[0],
                 effector_type=entry[1],
                 source_id=entry[2],
@@ -56,6 +70,8 @@ def upload_file(request):
                 uploader=request.user.username,
                 contributor=request.user.lab,
                 contact=request.user.email,
+                contributor=contributor,
+                contact=contact,
                 need_review=True
             ).save()
 
@@ -84,19 +100,24 @@ def upload_file(request):
     return render(request, "upload.html", {"form": form})
 
 def handle_uploaded_file(f, request):
-    status_err = []
-    dimer_err = []
     wb = openpyxl.load_workbook(f)
     if wb.__contains__('List of lines'):
         worksheet = wb["List of lines"]
+        
+        # Prepare to record illegal field values
+        err_dict = dict()
+        for defined_field in TEMPLATE.field_opts.keys():
+            err_dict[defined_field] = []
+        
         excel_data = list()
         header=True
         # iterating over the rows and
         # getting value from each cell in row
         for row in worksheet.iter_rows():
+            error_found = False
             if header:
-                for cname in row:
-                    if cname.value not in TEMPLATE_CNAMES:
+                for ncol, cname in enumerate(row):
+                    if cname.value not in TEMPLATE_CNAMES and ncol < len(row) - 1:
                         messages.error(
                             request,
                             (cname.value + ' is not a legit column name in the\
@@ -111,29 +132,42 @@ def handle_uploaded_file(f, request):
                 row_data.append(str(cell.value))
             
             # Examine data integrity
-            if row_data[10] == EXAMPLE_NOTE:
+
+            # Skip examples
+            note_col = TEMPLATE.get_field_index('notes')
+            if row_data[note_col] == EXAMPLE_NOTE:
                 continue
-            if row_data[7] not in STATUS_DICT:
-                status_err.append(row_data[7])
-            if row_data[6] not in DIMERIZER_DICT:
-                dimer_err.append(row_data[6])
+
+            for defined_field in TEMPLATE.field_opts.keys():
+                legit_choices = TEMPLATE.field_choices[defined_field]
+                this_cell = row_data[TEMPLATE.get_field_index(defined_field)]
+    
+                if this_cell not in legit_choices and this_cell != "None":
+                    if this_cell not in err_dict[defined_field]:
+                        err_dict[defined_field].append(this_cell)
+                        error_found = True
+
+            if error_found:
+                continue
+
+
+            # Replace None with ''
+            row_data = ['' if i == 'None' else i for i in row_data]
             excel_data.append(row_data)
 
-        if status_err or dimer_err:
-            err_show = (
-                'The values in the status column must be: ' + ', '.join([str(i) for i in STATUS_DICT.keys()]),
-                'The values in the dimerizer column must be: ' + ', '.join([str(i) for i in DIMERIZER_DICT.keys()])
-            )
-
-            if status_err:
+        error_found = [len(err_dict[err_key]) for err_key in err_dict]
+        if max(error_found) > 0:
+            for err_key in err_dict:
+                if len(err_dict[err_key]) == 0:
+                    continue
+                
+                err_i = ', '.join(err_dict[err_key])
+                legit_choices = TEMPLATE.field_choices[err_key]
+                report = 'Error: Unknown ' + err_key + ' found: ' + err_i + '. '
+                legit_disclaimer = 'The values in the ' + err_key + ' column must be: ' + ', '.join(legit_choices)
                 messages.error(
                     request,
-                        ('Error: Unknown status found: ' + ', '.join(status_err) + '. ' + err_show[0])
-                )
-            if dimer_err:
-                messages.error(
-                    request,
-                        ('Error: Unknown dimerization domain found: ' + ', '.join(dimer_err) + '. ' + err_show[1])
+                    (report + legit_disclaimer)
                 )
             return 1
             
@@ -146,20 +180,20 @@ def handle_uploaded_file(f, request):
         return 1
 
 def add_line(request):
+    init_dict = {}
     try:
-        prefill_contr = request.user.lab
+        init_dict['contributor'] = request.user.lab
     except:
-        prefill_contr = 'Anonymous user'
+        init_dict['contributor'] = ''
 
     try:
-        prefill_email = request.user.email
+        init_dict['contact'] = request.user.email
     except:
-        prefill_email = ''
+        init_dict['contact'] = ''
 
-    if request.user.username == '':
-        prefill_uploader = 'Anonymous user'
-    else:
-        prefill_uploader = request.user.username
+    if request.user.is_authenticated:
+        init_dict['uploader'] = request.user   
+
 
     if request.method == "POST":
       form = NewLineForm(request.POST)

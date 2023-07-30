@@ -8,21 +8,18 @@
       <th scope="col">MIMIC/CRIMIC #</th>
       <th scope="col">Chromosome</th>
       <th scope="col">Location</th>
-      <th scope="col">Cassette style</th>
+      <th scope="col">Cassette</th>
       <th scope="col">Dimerization domain</th>
       <th scope="col">Status</th>
       <th scope="col">Private</th>
-      <th scope="col">Citation</th>
       <th scope="col">Contributor</th>
+      <th scope="col">Citation</th>
+      <th scope="col">Notes</th>
       {% for line in line_list %}
           <tr>
             {% for field in line %}
               <td>
-              {% if forloop.last %}
-                {{ user.lab }}
-              {% else %}
-                {{ field }}
-              {% endif %}
+               {{ field }}
               </td>
             {% endfor %}
           </tr>

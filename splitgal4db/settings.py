@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import json, os
 from django.core.exceptions import ImproperlyConfigured
-from .utils import get_secret
+from .utils import get_secret,upload_template
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,6 +25,7 @@ STATICFILES_DIRS = [
 
 # Path to batch upload template
 TEMPLATE_PATH = 'static/template.xlsx'
+TEMPLATE = upload_template(TEMPLATE_PATH)
 # Note field for example entries. Rows matching this will be ignored on upload.
 EXAMPLE_NOTE = "This is an example. Please remove it before you upload."
 

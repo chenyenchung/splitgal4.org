@@ -21,7 +21,7 @@ def index(request):
                     Q(source_id__icontains=query) |
                     Q(cassette__icontains=query) |
                     Q(contributor__icontains=query)|
-                    Q(reference__icontains=query)
+                    Q(citation__icontains=query)
                 )
             ).order_by("status")
         else:
@@ -41,7 +41,7 @@ def index(request):
                     Q(cassette__icontains=query) |
                     Q(source_id__icontains=query) |
                     Q(contributor__icontains=query)|
-                    Q(reference__icontains=query)
+                    Q(citation__icontains=query)
                 )
             ).order_by("id")
         else:

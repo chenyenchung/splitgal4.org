@@ -1,6 +1,10 @@
 from django import forms
 from django.forms import ModelForm
+from django.conf import settings
 from splitgal4_lines.models import fly_line
+from members.models import CustomUser
+
+TEMPLATE = settings.TEMPLATE
 
 class UploadFileForm(forms.Form):
     file = forms.FileField(
@@ -14,27 +18,25 @@ class UploadFileForm(forms.Form):
 # Create a form for uploading individual lines
 class NewLineForm(ModelForm):
     gene_name = forms.CharField(
-        max_length=128,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
                 'placeholder': 'Please enter the gene symbol',
             }
-        )
+        ),
+        required = True
     )
 
     effector_type = forms.CharField(
-        max_length=8,
         widget=forms.Select(
-            choices=fly_line.EFFECTORS,
+            choices=TEMPLATE.field_opts['effector_type'],
             attrs={
-                'class': 'form-control'
+                'class': 'form-control',
             }
         )
     )
 
     source_id = forms.CharField(
-        max_length=16,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -44,18 +46,16 @@ class NewLineForm(ModelForm):
         required=False
     )
     cassette = forms.CharField(
-        max_length=8,
         widget=forms.Select(
-            choices=fly_line.CASSETTE_STYLE,
+            choices=TEMPLATE.field_opts['cassette'],
             attrs={
-                'class': 'form-control'
+                'class': 'form-control',
             }
         )
     )
     dimerizer = forms.CharField(
-        max_length=8,
         widget=forms.Select(
-            choices=fly_line.DIMERIZER_STYLE,
+            choices=TEMPLATE.field_opts['dimerizer'],
             attrs={
                 'class': 'form-control'
             }
@@ -63,9 +63,8 @@ class NewLineForm(ModelForm):
     )
     ins_seqname = forms.CharField(
         label='Inserted chromosome',
-        max_length=8,
         widget=forms.Select(
-            choices=fly_line.CHRS,
+            choices=TEMPLATE.field_opts['ins_seqname'],
             attrs={
                 'class': 'form-control'
             }
@@ -82,7 +81,6 @@ class NewLineForm(ModelForm):
     )
     contributor = forms.CharField(
         label='Contributor (e.g., the host lab)',
-        max_length=256,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -94,9 +92,8 @@ class NewLineForm(ModelForm):
         widget=forms.HiddenInput()
     )
 
-    reference = forms.CharField(
+    citation = forms.CharField(
         label='Citation info (Optional; PMID is preferred)',
-        max_length=1024,
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
@@ -106,9 +103,8 @@ class NewLineForm(ModelForm):
         required=False
     )
     status = forms.CharField(
-        max_length=4,
         widget=forms.Select(
-            choices=fly_line.STATUS_LIST,
+            choices=TEMPLATE.field_opts['status'],
             attrs={
                 'class': 'form-control'
             }
@@ -123,6 +119,19 @@ class NewLineForm(ModelForm):
             }
         )
     )
+
+    notes = forms.CharField(
+        max_length=2048,
+        required=False,
+        label='Notes',
+        widget=forms.TextInput(
+            attrs = {
+                'class': 'form-control',
+                'placeholder': 'Other information that you want to share with others',
+            }
+        )
+    )
+
     private = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput()
