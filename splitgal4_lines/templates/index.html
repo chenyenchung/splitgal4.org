@@ -14,7 +14,7 @@
       <th scope="col">Effector</th>
       <th scope="col">Status</th>
       <th scope="col">Contact</th>
-      {% if user.is_superuser or user.is_staff %}
+      {% if user.is_superuser or user.contributor %}
         <th scope="col">Private</th>
       {% endif %}
       {% for line in line_list %}
@@ -37,7 +37,7 @@
             {% endif %}
             </a>
           </td>
-        {% if user.is_superuser or user.is_staff %}
+        {% if user.is_superuser or user.contributor %}
           <td>
             {% if line.private %}
             Yes

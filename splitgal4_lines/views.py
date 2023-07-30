@@ -8,7 +8,7 @@ def index(request):
     signed_in = request.user.is_authenticated
     query = request.GET.get('search-keyword') 
     if signed_in:
-        see_all = request.user.is_staff
+        see_all = request.user.contributor
         if query:        
             line_list = fly_line.objects.filter(
                 (Q(private=see_all) |

@@ -16,6 +16,7 @@ class CustomUser(AbstractUser):
     )
 
     verified = models.BooleanField(default=False, blank=False)
+    contributor = models.BooleanField(default=False, blank=False)
 
     def __str__(self):
         return self.username
