@@ -2,5 +2,6 @@ db.sqlite3
 __pycache__
 migrations
 .DS_Store
+.vscode
 secrets.json
 ~$*
