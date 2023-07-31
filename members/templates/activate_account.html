@@ -1,0 +1,15 @@
+{% autoescape off %}
+Hi {{ user.first_name }},
+
+    Welcome to splitgal4.org! Please click on the link below to confirm your 
+registration:
+
+    http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+    The link is valid for 30 minutes. You may log in again and request another
+link if it expires.
+
+Best regards,
+Your System Administrator
+
+{% endautoescape %}
