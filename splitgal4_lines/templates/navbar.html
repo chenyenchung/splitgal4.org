@@ -23,12 +23,17 @@
           <ul class="dropdown-menu">
             <li>
               <a class="dropdown-item" href="{% url 'contributions' user.username %}">
-                <i class="fa-solid fa-file-pen pe-2"></i> My Lines
+                <i class="fa-solid fa-file-pen pe-2"></i> Manage My Lines
               </a>
             </li>
             <li>
-              <a class="dropdown-item" aria-current="page" href="{% url 'upload' %}">
-                Batch upload
+              <a class="dropdown-item" aria-current="page" href="{% url 'user_update' user.username %}">
+                <i class="fa-solid fa-user-pen pe-2"></i> Update My Info
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" aria-current="page" href="{% url 'pw_update' user.username %}">
+                <i class="fa-solid fa-lock pe-2"></i> Change My Password
               </a>
             </li>
           </ul>

@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from members.models import CustomUser
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-# from django.contrib.auth.forms import UserCreationForm
-from .forms import CustomUserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm
 
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -110,3 +110,30 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Activation link is invalid!')
     return redirect('home')
+
+def user_update(request, username):
+    this_user = CustomUser.objects.get(username=username)
+    form = CustomUserChangeForm(instance=this_user)
+
+    if request.method == "POST":
+        form = CustomUserChangeForm(request.POST, instance=this_user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('Your account have been updated.'))
+        else:
+            messages.error(request, (form.errors['__all__']))
+    else:
+        form = CustomUserChangeForm(instance=this_user)
+        
+    return render(request, 'user_edit.html', {
+         'form': form,
+         'this_user': this_user
+      })
+
+def pw_update(request, username):
+    this_user = CustomUser.objects.get(username=username)
+    form = CustomPasswordChangeForm(user=this_user)
+    return render(request, 'user_edit.html', {
+         'form': form,
+         'this_user': this_user
+      })
