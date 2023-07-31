@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
 from .models import fly_line
+from .forms import RemoveLineForm
 from upload.forms import NewLineForm
 
 def index(request):
@@ -11,6 +12,7 @@ def index(request):
         see_all = request.user.contributor
         if query:        
             line_list = fly_line.objects.filter(
+                Q(removed=False) &
                 (Q(private=see_all) |
                 Q(private=False) |
                 Q(contributor=request.user.lab)|
@@ -26,6 +28,7 @@ def index(request):
             ).order_by("status")
         else:
             line_list = fly_line.objects.filter(
+                Q(removed=False) &
                 (Q(private=see_all) |
                 Q(private=False) |
                 Q(contributor=request.user.lab)|
@@ -34,6 +37,7 @@ def index(request):
     else:
         if query:        
             line_list = fly_line.objects.filter(
+                Q(removed=False) &
                 Q(private=False) & 
                 (
                     Q(gene_name__icontains=query) |
@@ -46,6 +50,7 @@ def index(request):
             ).order_by("id")
         else:
             line_list = fly_line.objects.filter(
+                Q(removed=False) &
                 Q(private=False)
             ).order_by("id")
 
@@ -66,6 +71,7 @@ def user_page(request, username):
     if query:        
         uploaded = fly_line.objects.filter(
             Q(uploader__username=username) &
+            Q(removed=False) &
             (
                 Q(gene_name__icontains=query) |
                 Q(effector_type__icontains=query) |
@@ -115,7 +121,27 @@ def update_line(request, sg_id):
         "form": form
     })
 
+def remove_line(request, sg_id):
+    sgline = fly_line.objects.get(id = sg_id)
+    form = RemoveLineForm(instance=sgline, initial={'removed': True})
 
+    if 'Delete' in request.POST:
+        form = RemoveLineForm(request.POST, instance=sgline)
+        form.save()
+        messages.success(request,  (
+            f"You deleted {sgline.gene_name}-{sgline.effector_type}."
+        )
+        )
+        return redirect('home')
+        
+    if 'Cancel' in request.POST:
+        return redirect('/show_detail/SG' + sg_id)
+    
+    return render(request, 'remove_line.html', {
+        'line': sgline,
+        'form': form,
+    })
+    
 def readme(request):
     return render(request, 'readme.html')
 

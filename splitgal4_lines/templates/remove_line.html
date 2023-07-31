@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if user.is_authenticated and line.uploader.username == user.username%}
+
+<h2>Deleting: {{ line.gene_name }}-{{ line.effector_type }}</h2>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">SG{{ line.id }}</li>
+  </ol>
+</nav>
+<hr class="border border-3">
+<div class="alert alert-danger" role="alert">
+  <h4>
+    <i class="fa-solid fa-trash me-3 fa-lg"></i>
+    Are you sure you want to delete {{ line.gene_name }}-{{ line.effector_type }}?
+  </h4>
+</div>
+
+<form action="" method=POST class="m-3">
+  {% csrf_token %}
+  <div class="form-floating">
+    {{ form.as_p }}
+  <input type="submit" value="Delete" class="btn btn-danger" name="Delete">
+  <input type="submit" value="Cancel" class="btn btn-secondary" name="Cancel">
+  </div>
+</form>
+
+{% else %}
+<h3>Sorry, you don't have edit access to this line. If you are the uploader,
+  please <a href="{% url 'login' %}">log in</a> to view this page.</h3>
+{% endif %}
+{% endblock %}

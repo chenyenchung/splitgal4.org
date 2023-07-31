@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 {% if not line.private or user.contributor %}
-<h2>{{ line.gene_name }}-{{ line.effector_type }}</h2>
+<h2 class="mb-2">
+  {{ line.gene_name }}-{{ line.effector_type }}
+</h2>
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
@@ -10,11 +12,26 @@
 </nav>
 <hr class="border border-3">
 {% if user.username == line.uploader.username %}
-<form action="{% url 'update_line' line.id %}">
-  <button type="submit" class="btn btn-outline-dark">
-    Edit
-  </button>
-</form>
+<div class="container mb-4">
+  <div class="row justify-content-start">
+    <div class="col-sm-1">
+      <form action="{% url 'update_line' line.id %}">
+        <button type="submit" class="btn btn-outline-dark">
+          Edit
+        </button>
+      </form>
+    </div>
+
+    <div class="col-sm-1">
+      <form action="{% url 'remove_line' line.id %}">
+        <button type="submit" class="btn btn-outline-danger">
+          Delete
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
 {% endif %}
 <table class="table table-hover">
   <tr>

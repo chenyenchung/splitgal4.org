@@ -81,6 +81,7 @@ class fly_line(models.Model):
     )
     need_review = models.BooleanField(default=False, blank=False)
     date_created = models.DateTimeField(default = timezone.now)
+    removed = models.BooleanField(default=False,blank=False)
 
     def __str__(self):
         return self.gene_name + '-' + self.effector_type

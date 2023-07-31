@@ -19,9 +19,11 @@
       {% endif %}
       {% for line in line_list %}
         <tr>
-          <td><a href="{% url 'details' line.id %}">
+          <td>
+            <a href="{% url 'details' line.id %}">
             SG{{ line.id }}
-          </a></td>
+            </a>
+          </td>
           <td>{{ line.gene_name }}</td>
           <td>
             {{ line.effector_type }}

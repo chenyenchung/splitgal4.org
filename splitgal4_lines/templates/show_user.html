@@ -27,6 +27,7 @@
     <th scope="col">Status</th>
     <th scope="col">Private</th>
     <th scope="col">Update</th>
+    <th scope="col">Delete</th>
     {% for line in line_list %}
       <tr>
         <td><a href="{% url 'details' line.id %}">
@@ -48,6 +49,13 @@
           <form action="{% url 'update_line' line.id %}">
             <button type="submit" class="btn btn-outline-secondary">
               Update
+            </button>
+          </form>
+        </td>
+        <td>
+          <form action="{% url 'remove_line' line.id %}">
+            <button type="submit" class="btn btn-outline-danger">
+              Delete
             </button>
           </form>
         </td>
