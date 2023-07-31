@@ -36,7 +36,7 @@ __Manage My Lines__.
 ### Why would I need an account?
 
 The lines you shared will be associated with your account. The account grants
-you access to a dashboard to manage and update your lines.
+you access to a dashboar (__Manage My Lines__) to manage and update your lines.
 
 In addition, after sharing your lines, your account will have access to the
 lines that are marked as internal sharing only.
