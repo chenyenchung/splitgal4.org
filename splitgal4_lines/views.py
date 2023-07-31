@@ -25,7 +25,7 @@ def index(request):
                     Q(contributor__icontains=query)|
                     Q(citation__icontains=query)
                 )
-            ).order_by("status")
+            ).order_by("status", "-date_created")
         else:
             line_list = fly_line.objects.filter(
                 Q(removed=False) &
@@ -33,7 +33,7 @@ def index(request):
                 Q(private=False) |
                 Q(contributor=request.user.lab)|
                 Q(uploader=request.user))
-            ).order_by("status")
+            ).order_by("status", "-date_created")
     else:
         if query:        
             line_list = fly_line.objects.filter(
@@ -80,11 +80,11 @@ def user_page(request, username):
                 Q(contributor__icontains=query)|
                 Q(citation__icontains=query)
             )
-        ).order_by("status")
+        ).order_by("status", "-date_created")
     else: 
         uploaded = fly_line.objects.filter(
             uploader__username=username
-        ).order_by("status")
+        ).order_by("status", "-date_created")
 
     return render(request, 'show_user.html', {
         "line_list": uploaded,
