@@ -9,6 +9,13 @@
   </ol>
 </nav>
 <hr class="border border-3">
+{% if user.username == line.uploader.username %}
+<form action="{% url 'update_line' line.id %}">
+  <button type="submit" class="btn btn-outline-dark">
+    Edit
+  </button>
+</form>
+{% endif %}
 <table class="table table-hover">
   <tr>
     <th scope="row">

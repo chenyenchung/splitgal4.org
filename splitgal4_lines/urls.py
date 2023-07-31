@@ -6,5 +6,7 @@ urlpatterns = [
     path("", views.index, name="home"),
     path("readme", views.readme, name="readme"),
     path("privacy", views.privacy, name="privacy"),
-    path("show_detail/SG" + "<sg_id>", views.show_idv_line, name="details"),
+    path("show_detail/SG" + "<sg_id>", views.idv_line, name="details"),
+    path("contributions/<username>", views.user_page, name="contributions"),
+    path("update_line/SG" + "<sg_id>", views.update_line, name="update_line"),
 ]

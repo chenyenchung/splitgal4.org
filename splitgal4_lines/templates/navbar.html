@@ -1,57 +1,93 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark border-bottom border-bottom-dark" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home' %}">Split-Gal4 Database</a>
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <div class="ms-2"><i class="fa-solid fa-dna pe-2"></i>Split-Gal4 Database</div>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if user.is_superuser %}
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/admin">Dashboard</a>
+        <li class="nav-item mx-2">
+          <a class="nav-link" aria-current="page" href="/admin">
+            <i class="fa-solid fa-gauge-high pe-2"></i> Dashboard
+          </a>
         </li>
         {% endif %}
         {% if user.is_authenticated %}
+        <li class="nav-item dropdown mx-2">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-file-pen pe-2"></i> My Account
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{% url 'contributions' user.username %}">
+                <i class="fa-solid fa-file-pen pe-2"></i> My Lines
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" aria-current="page" href="{% url 'upload' %}">
+                Batch upload
+              </a>
+            </li>
+          </ul>
+        </li>
+
           {% if user.verified %}
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown mx-2">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Upload
+              <i class="fa-solid fa-cloud-arrow-up pe-2"></i> Upload
             </a>
             <ul class="dropdown-menu">
               <li>
-                <a class="dropdown-item" href="{% url 'add_line' %}">Add a line</a>
-              </li>
-              
-              <li>
-                <a class="dropdown-item" aria-current="page" href="{% url 'upload' %}">
-                  Batch upload
+                <a class="dropdown-item" href="{% url 'add_line' %}">
+                  <i class="fa-solid fa-clipboard-question pe-2"></i> Add a line
                 </a>
               </li>
-              
+              <li>
+                <a class="dropdown-item" aria-current="page" href="{% url 'upload' %}">
+                  <i class="fa-solid fa-file-import pe-2"></i> Batch upload
+                </a>
+              </li>
             </ul>
           </li>
           {% else %}
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{% url 'add_line' %}">Add a line</a>
+          <li class="nav-item mx-2">
+            <a class="nav-link" aria-current="page" href="{% url 'add_line' %}">
+              <i class="fa-solid fa-clipboard-question pe-2"></i> Add a line
+            </a>
           </li>
           {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Sign out</a>
+        <li class="nav-item mx-2">
+          <a class="nav-link" aria-current="page" href="{% url 'logout' %}">
+            <i class="fa-solid fa-right-from-bracket pe-2"></i>Sign out
+          </a>
         </li>
         {% else %}
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="{% url 'add_line' %}">Add a line</a>
+        <li class="nav-item mx-2">
+          <a class="nav-link" aria-current="page" href="{% url 'add_line' %}">
+            <i class="fa-solid fa-clipboard-question pe-2"></i> Add a line
+          </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="{% url 'login' %}">Sign in/up</a>
+        <li class="nav-item mx-2">
+          <a class="nav-link" aria-current="page" href="{% url 'login' %}">
+            <i class="fa-solid fa-user-plus pe-2"></i> Sign in/up
+          </a>
         </li>
         {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="{% url 'readme' %}">Read me</a>
+        <li class="nav-item mx-2">
+          <a class="nav-link" aria-current="page" href="{% url 'readme' %}">
+            <i class="fa-solid fa-file-circle-question pe-2"></i> Read me
+          </a>
         </li>
       </ul>
+      
       <form class="d-flex" role="search">
-        <input class="form-control me-2" name="search-keyword" type="search" placeholder="Search" aria-label="Search">
+        <span class="navbar-text me-2">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input class="form-control me-2" name="search-keyword" type="search" placeholder="" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>

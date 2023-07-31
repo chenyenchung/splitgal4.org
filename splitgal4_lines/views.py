@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
 from .models import fly_line
+from upload.forms import NewLineForm
 
 def index(request):
-
     signed_in = request.user.is_authenticated
     query = request.GET.get('search-keyword') 
     if signed_in:
@@ -54,14 +54,70 @@ def index(request):
         "keyword": query,
     })
     
-def show_idv_line(request, sg_id):
+def idv_line(request, sg_id):
     sgline = fly_line.objects.get(id = sg_id)
-    return(render(request, 'show_detail.html', {
+    return render(request, 'show_detail.html', {
         "line": sgline
-    }))
+    })
+
+def user_page(request, username):
+    query = request.GET.get('search-keyword') 
+
+    if query:        
+        uploaded = fly_line.objects.filter(
+            Q(uploader__username=username) &
+            (
+                Q(gene_name__icontains=query) |
+                Q(effector_type__icontains=query) |
+                Q(source_id__icontains=query) |
+                Q(cassette__icontains=query) |
+                Q(contributor__icontains=query)|
+                Q(citation__icontains=query)
+            )
+        ).order_by("status")
+    else: 
+        uploaded = fly_line.objects.filter(
+            uploader__username=username
+        ).order_by("status")
+
+    return render(request, 'show_user.html', {
+        "line_list": uploaded,
+        "requested_user": username,
+        "keyword": query,
+    })
+
+def update_line(request, sg_id):
+    sgline = fly_line.objects.get(id = sg_id)
+    form = NewLineForm(instance = sgline)
+
+    if 'Cancel' in request.POST:
+        return redirect('/show_detail/SG' + sg_id)
+
+    if 'Update' in request.POST:
+        form = NewLineForm(request.POST, instance = sgline)
+        if form.is_valid():
+            gene = form.cleaned_data['gene_name']
+            effector = form.cleaned_data['effector_type']
+            form.save()
+            messages.success(
+                request,(
+                    f'Your edits on {gene}-{effector} are saved successfully.'
+                )
+            )
+            return redirect('/show_detail/SG' + sg_id)
+        else:
+            messages.error(request,(form.errors))
+            form = NewLineForm(instance=sgline)
+    
+
+    return render(request, 'update_line.html', {
+        "line": sgline,
+        "form": form
+    })
+
 
 def readme(request):
-    return(render(request, 'readme.html'))
+    return render(request, 'readme.html')
 
 def privacy(request):
-    return(render(request, 'privacy.html'))
+    return render(request, 'privacy.html')

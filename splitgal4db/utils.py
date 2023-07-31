@@ -112,7 +112,7 @@ class upload_template:
 
     def get_field_index(self, query: str):
         if query in self.field_keys:
-            return(self.field_keys.index(query))
+            return self.field_keys.index(query)
         else:
             error_msg = ' is not a valid field in the template.'
             raise ValueError(query + error_msg)
