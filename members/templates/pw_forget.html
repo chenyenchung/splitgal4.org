@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="shadow p-4 bg-body rounded">
+  <h2>Forgot your password?</h2>
+
+  <form action="" method=POST class="m-3">
+    {% csrf_token %}
+
+    <div class="form-floating">
+    <div class="my-4">
+      Don't worry. Please provide us the email address associated with your account.
+      We will send a confirmation email so you can reset your password.
+    </div> 
+      {{ form.as_p }}
+    <input type="submit" value="Submit" class="btn btn-secondary">
+    </div>
+  </form>
+</div>
+
+{% endblock %}

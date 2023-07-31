@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django import forms
+from django.forms import ModelForm
 from .models import CustomUser
 
 User = CustomUser
@@ -149,10 +150,11 @@ class CustomUserChangeForm(UserChangeForm):
     def clean(self):
         init_email = self.initial["email"]
         email = self.cleaned_data.get('email')
+
         if email != init_email and User.objects.filter(email=email).exists():
-            raise ValidationError(
-                "Email: This email has been used to register an account."
-            )
+            self.add_error("email", ValidationError(
+                "This email has been used to register an account.", code = "Email"
+                ))
         return self.cleaned_data
 
 class CustomPasswordChangeForm(PasswordChangeForm):
@@ -162,3 +164,19 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         self.fields['old_password'].widget.attrs['class'] = 'form-control'
         self.fields['new_password1'].widget.attrs['class'] = 'form-control'
         self.fields['new_password2'].widget.attrs['class'] = 'form-control'
+
+
+class EmailPasswordResetForm(ModelForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Please enter your email',
+            }
+        )
+    )
+    class Meta:
+        model = User
+        fields = (
+            'email',
+        )

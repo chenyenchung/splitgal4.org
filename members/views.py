@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from members.models import CustomUser
 from django.contrib import messages
 from django.utils.safestring import mark_safe
-from django.contrib.auth.forms import PasswordChangeForm
-from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm
+from django.contrib.auth.forms import SetPasswordForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm, EmailPasswordResetForm
 
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
@@ -70,7 +70,7 @@ def user_register(request):
 def activateEmail(request):
     user = request.user
     mail_subject = 'Welcome to splitgal4.org'
-    message = render_to_string('template_activate_account.html', {
+    message = render_to_string('activate_account.html', {
         'user': user.username,
         'domain': get_current_site(request).domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -81,7 +81,7 @@ def activateEmail(request):
     email = EmailMessage(mail_subject, message, to=[to_email])
     if email.send():
       messages.success(
-        request, f'Dear {user}, please go to you email ({to_email}) \
+        request, f'Dear {user}, please go to your email ({to_email}) \
           inbox and click on received activation link to confirm and complete \
           the registration. If you don\'t see it in a few minutes, please check \
           your spam folder.'
@@ -121,7 +121,7 @@ def user_update(request, username):
             form.save()
             messages.success(request, ('Your account have been updated.'))
         else:
-            messages.error(request, (form.errors['__all__']))
+            messages.error(request, (form.errors))
     else:
         form = CustomUserChangeForm(instance=this_user)
         
@@ -137,3 +137,85 @@ def pw_update(request, username):
          'form': form,
          'this_user': this_user
       })
+
+def pw_forget(request):
+    if request.method == "POST":
+        form = EmailPasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            pwresetEmail(request, email)
+            return redirect('home')
+        else:
+            messages.error(request, (form.errors))
+    else:
+        form = EmailPasswordResetForm()
+
+    return render(request, 'pw_forget.html', {
+         'form': form,
+      })
+
+def pwresetEmail(request, email):
+    try:
+        user = CustomUser.objects.get(email=email)
+        mail_subject = 'Reset your password for splitgal4.org'
+        message = render_to_string('password_reset.html', {
+            'user': user.username,
+            'domain': get_current_site(request).domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': account_activation_token.make_token(user),
+            'protocol': 'https' if request.is_secure() else 'http'
+        })
+        to_email = user.email
+        email = EmailMessage(mail_subject, message, to=[to_email])
+        email.send()
+    except:
+        pass
+
+    # Always show the info, so people cannot tell whether an email exist
+    # or not.
+    messages.success(
+        request, (
+            "If the email was used for an account, a reset link would be \
+            sent to your inbox. If you don\'t see it in a few minutes, \
+            please check your spam folder."
+        )
+    )
+        
+    return redirect('home')
+
+def pw_reset(request, uidb64, token):
+    User = get_user_model()
+
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == "POST":
+            form = SetPasswordForm(user=user, data={
+                'uid': uid,
+                'token': token,
+                'new_password1': request.POST['new_password1'],
+                'new_password2': request.POST['new_password2'],
+            })
+            if form.is_valid():
+                form.save()
+                messages.success(request, (
+                    "Your password has been successfully reset. \
+                    Please try to log in."
+                ))
+                return redirect('home')
+            else:
+                messages.error(request, (
+                    form.errors
+                ))
+        else:
+            form = SetPasswordForm(user=user)
+        return render(request, 'pw_forget.html', {
+         'form': form,
+      })
+    else:
+        messages.error(request, 'Reset link is invalid.')
+    return redirect('home')
