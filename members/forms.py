@@ -68,9 +68,9 @@ class CustomUserCreationForm(UserCreationForm):
     def clean(self):
        email = self.cleaned_data.get('email')
        if User.objects.filter(email=email).exists():
-            raise ValidationError(
-                "This email has been used to register an account."
-            )
+            self.add_error("email", ValidationError(
+                "This email has been used to register an account.", code = "Email"
+                ))
        return self.cleaned_data
     
     def __init__(self, *args, **kwargs):
