@@ -43,8 +43,12 @@ SECRET_KEY = get_secret('SECRET_KEY', secrets)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', 'www.splitgal4.org', 'splitgal4.org']
+ALLOWED_HOSTS = ['www.splitgal4.org', 'splitgal4.org']
 CSRF_TRUSTED_ORIGINS = ["https://www.splitgal4.org", "https://splitgal4.org"]
+
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+    CSRF_TRUSTED_ORIGINS = ["http://*", "https://*"]
 
 if not DEBUG:
     SECURE_HSTS_SECONDS = 3600
