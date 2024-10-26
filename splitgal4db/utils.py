@@ -1,6 +1,7 @@
 import openpyxl
 import warnings
 from collections import OrderedDict
+from django.core.exceptions import ImproperlyConfigured
 
 
 def get_secret(setting: str, secrets: dict):
