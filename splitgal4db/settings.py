@@ -50,10 +50,14 @@ if DEBUG:
     ALLOWED_HOSTS = ['*']
     CSRF_TRUSTED_ORIGINS = ["http://*", "https://*"]
 
+TURNSTILE_SITEKEY = get_secret('TURNSTILE_SITEKEY', secrets)
+TURNSTILE_SECRET = get_secret('TURNSTILE_SECRET', secrets)
+
 if not DEBUG:
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
@@ -70,6 +74,7 @@ INSTALLED_APPS = [
     'splitgal4_lines',
     'members',
     'upload',
+    'turnstile',
 ]
 
 MIDDLEWARE = [

@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django import forms
 from django.forms import ModelForm
 from .models import CustomUser
+from turnstile.fields import TurnstileField
 
 User = CustomUser
 class CustomUserCreationForm(UserCreationForm):
@@ -55,6 +56,8 @@ class CustomUserCreationForm(UserCreationForm):
         ),
         required=False
     )
+
+    turnstile = TurnstileField()
 
     class Meta:
         model = User
@@ -175,6 +178,9 @@ class EmailPasswordResetForm(ModelForm):
             }
         )
     )
+
+    turnstile = TurnstileField()
+    
     class Meta:
         model = User
         fields = (
