@@ -3,3 +3,6 @@ services:
     build: .
     ports:
       - "8000:8000"
+    volumes:
+      - ./db.sqlite3:/home/splitgal4_org/db.sqlite3
+    restart: unless-stopped

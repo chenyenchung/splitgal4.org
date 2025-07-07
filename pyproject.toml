@@ -1,0 +1,14 @@
+[project]
+name = "splitgal4-org"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=5.2.4",
+    "django-turnstile>=0.1.2",
+    "gunicorn>=23.0.0",
+    "openpyxl>=3.1.5",
+    "requests>=2.32.4",
+    "six>=1.17.0",
+]
